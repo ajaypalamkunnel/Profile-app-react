@@ -3,11 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
+console.log(process.env.MONGODB_URI); // Correct connection string
 
-  console.log(process.env.MONGODB_URI) // Correct connection string
- 
-    
-  mongoose
+mongoose
   .connect(process.env.MONGODB_URI) // Correct connection string
   .then(() => {
     console.log("Connected to MongoDB");
@@ -16,7 +14,6 @@ dotenv.config();
     console.error("Failed to connect to MongoDB:", err);
     process.exit(1);
   });
-
 
 const app = express();
 
