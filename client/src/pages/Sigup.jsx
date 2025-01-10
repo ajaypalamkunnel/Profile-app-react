@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 const Sigin = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -58,14 +59,18 @@ const Sigin = () => {
       const data = await res.json();
       console.log(data);
 
-      
       if (data.success === false) {
         setError(true);
         toast.error("something went wrong");
         return;
       }
+
       setLoading(false);
       setError(false);
+      toast.success("User created succesfully😎");
+      setTimeout(() => {
+        navigate("/sign-in");
+      }, 3000);
     } catch (error) {
       console.log(error);
       toast.error("Failed to sign up. Please try again.");
@@ -104,7 +109,7 @@ const Sigin = () => {
       </form>
       <div className="flex gap-2 mt-5">
         <p>Have an accout </p>
-        <Link to="/signin">
+        <Link to="/sign-in">
           <span className="text-blue-600 ">sign In</span>
         </Link>
       </div>

@@ -30,7 +30,10 @@ app.use('/api/auth',authRoutes)
 
 //middleware
 app.use((err,req,res,next)=>{
-  const statusCode = err.status || 500;
+  console.log("ith middle where");
+  console.log("===>",err.statuscode);
+  
+  const statusCode = err.statuscode || 500;
   const message = err.message || 'Internal Server Error';
 
   return res.status(statusCode).json({

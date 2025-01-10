@@ -26,13 +26,15 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(401, "Invalid Username or Password"));
 
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
-    const {password:hashedPassword,...rest} = validUser._doc
-    const expiry = new Date(Date.now()+3600000)
+    const { password: hashedPassword, ...rest } = validUser._doc;
+    const expiry = new Date(Date.now() + 3600000);
     res
-      .cookie("access_token", token, { httpOnly: true,expires:expiry })
+      .cookie("access_token", token, { httpOnly: true, expires: expiry })
       .status(200)
       .json(rest);
   } catch (error) {
+    console.log("cathc==>",error);
+    
     next(error);
   }
 };
