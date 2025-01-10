@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  signInStart,
+  signInSucess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 const Signup = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -39,7 +46,7 @@ const Signup = () => {
     }
 
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -53,19 +60,16 @@ const Signup = () => {
       }
       const data = await res.json();
       //console.log(data);
-      setLoading(false);
-      navigate('/')
+      dispatch(signInSucess(data));
+      navigate("/");
     } catch (error) {
-      
-      if (error.message.toString().includes('404')) {
-        toast.error(
-          "Invalid credentials. Please check your email and password."
-        );
-      } else {
-        toast.error("Failed to sign In. Please try again.");
-      }
-
-      setLoading(false);
+      const errorMessage = error.message.includes("404")
+        ? "Invalid credentials. Please check your email and password."
+        : error;
+        console.log("=====>",errorMessage);
+        
+      dispatch(signInFailure(error));
+      toast.error(errorMessage+"====>");
     }
   };
 
@@ -87,10 +91,11 @@ const Signup = () => {
           className="bg-slate-100 p-3 rounded-lg"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+        <button  disabled={loading} className="bg-slate-700 rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Sign Up"}
         </button>
       </form>
+       
       <div className="flex gap-2 mt-5">
         <p>Don't Have an accout </p>
         <Link to="/sign-up">
