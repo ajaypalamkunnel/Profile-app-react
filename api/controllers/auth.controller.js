@@ -44,11 +44,13 @@ export const googleAuth = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (user) {
+      console.log(user);
+      
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
       const { password: hashedPassword, ...rest } = user._doc;
       const expiry = new Date(Date.now() + 3600000); //1 hour
 
-      res.cookie("access_token", token, { httpOnly: true, expires: expiry });
+      res.cookie("access_token", token, { httpOnly: true, expires: expiry }).status(200).json(rest);
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
