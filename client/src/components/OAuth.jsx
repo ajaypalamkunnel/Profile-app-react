@@ -4,9 +4,10 @@ import React from 'react'
 import { app } from '../firebase';
 import { useDispatch, useSelector } from "react-redux";
 import { signInSucess } from '../redux/user/userSlice';
-
+import {useNavigate} from 'react-router-dom'
 const OAuth = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleGoogleClick =  async ()=>{
     try {
 
@@ -28,7 +29,7 @@ const OAuth = () => {
       const data = await res.json()
       dispatch(signInSucess(data))
       console.log(result);
-      
+      navigate('/')
       
     } catch (error) {
       
