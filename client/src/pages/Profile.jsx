@@ -6,6 +6,7 @@ import {
   deleteUserState,
   deleteUserSucces,
   signInFailure,
+  signout,
   updateUserFailure,
   updateUserState,
   updateUserSucces,
@@ -62,28 +63,41 @@ const Profile = () => {
   //delete handling
   const handleDeleteAccount = async () => {
     try {
-      dispatch(deleteUserState())
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE'
-      })
+      dispatch(deleteUserState());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
 
       const data = await res.json();
 
-      if(!res.ok){
-        const errorMessage = data.message || "Account deletion failed"
-        dispatch(deleteUserFailure(data))
-        toast.error(errorMessage)
-        return
+      if (!res.ok) {
+        const errorMessage = data.message || "Account deletion failed";
+        dispatch(deleteUserFailure(data));
+        toast.error(errorMessage);
+        return;
       }
-      dispatch(deleteUserSucces())
-      toast.success("Account deleted succesfully")
-
+      dispatch(deleteUserSucces());
+      toast.success("Account deleted succesfully");
     } catch (error) {
-      console.error("Error while deleting Profile:",error)
-      dispatch(deleteUserFailure())
+      console.error("Error while deleting Profile:", error);
+      dispatch(deleteUserFailure());
       toast.error("An unexpected error occurred. Please try again.");
     }
   };
+
+
+  //handle signout
+
+    const handleSignout = async()=>{
+      try {
+        await fetch("/api/auth/signout")
+        dispatch(signout())
+      } catch (error) {
+       console.log(error);
+        
+      }
+    }
+
 
   // data send api for backend
 
@@ -177,10 +191,13 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span onClick={handleDeleteAccount} className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
+        <span
+          onClick={handleDeleteAccount}
+          className="text-white cursor-pointer p-2 rounded-lg bg-red-600"
+        >
           Delete Account
         </span>
-        <span className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
+        <span onClick={handleSignout} className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
           Sign out
         </span>
       </div>
