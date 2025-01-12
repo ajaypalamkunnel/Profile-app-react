@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const HeaderAdmin = () => {
   return (
@@ -9,31 +9,13 @@ const HeaderAdmin = () => {
           <h1 className="font-bold">Profile App Admin</h1>
         </Link>
         <ul className="flex gap-4">
-          {/* <Link to="/">
-            <li>Home</li>
+          <Link>
+          <li className="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer hover:bg-red-600 transition">SignOut</li>
           </Link>
-          <Link to="/about">
-            <li>About</li>
-          </Link> */}
-          {/* {currentUser ? (
-            <Link to="/profile">
-              <img
-                className="h-7 w-7 rounded-full object-cover"
-                src={currentUser.profilePicture}
-                alt="Profile"
-              />
-            </Link>
-          ) : (
-            <Link to="/sign-in">
-              <li>Sign In</li>
-            </Link>
-          )} */}
-          
-         
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HeaderAdmin
+export default HeaderAdmin;

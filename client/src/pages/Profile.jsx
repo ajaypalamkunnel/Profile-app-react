@@ -13,9 +13,11 @@ import {
 } from "../redux/user/userSlice";
 import { toast, ToastContainer } from "react-toastify";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   console.log(currentUser.username);
+  const navigate = useNavigate()
   const fileRef = useRef(null);
   const [image, setImage] = React.useState(null);
   const [imageUrl, setImageUrl] = React.useState(null);
@@ -93,6 +95,7 @@ const Profile = () => {
       try {
         await fetch("/api/auth/signout")
         dispatch(signout())
+        navigate('/')
       } catch (error) {
        console.log(error);
         
