@@ -2,6 +2,9 @@ import React, { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import {
+  deleteUserFailure,
+  deleteUserState,
+  deleteUserSucces,
   signInFailure,
   updateUserFailure,
   updateUserState,
@@ -9,7 +12,7 @@ import {
 } from "../redux/user/userSlice";
 import { toast, ToastContainer } from "react-toastify";
 const Profile = () => {
-  const { currentUser,loading,error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   console.log(currentUser.username);
   const fileRef = useRef(null);
   const [image, setImage] = React.useState(null);
@@ -19,7 +22,6 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
 
   const dispatch = useDispatch();
-
 
   // data send api for image handling
   const handleFileChange = async (event) => {
@@ -57,6 +59,32 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  //delete handling
+  const handleDeleteAccount = async () => {
+    try {
+      dispatch(deleteUserState())
+      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+        method:'DELETE'
+      })
+
+      const data = await res.json();
+
+      if(!res.ok){
+        const errorMessage = data.message || "Account deletion failed"
+        dispatch(deleteUserFailure(data))
+        toast.error(errorMessage)
+        return
+      }
+      dispatch(deleteUserSucces())
+      toast.success("Account deleted succesfully")
+
+    } catch (error) {
+      console.error("Error while deleting Profile:",error)
+      dispatch(deleteUserFailure())
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  };
+
   // data send api for backend
 
   const handleSubmit = async (e) => {
@@ -64,11 +92,10 @@ const Profile = () => {
     if (imageUrl) {
       formData["profilePicture"] = imageUrl;
     }
-    if(Object.keys(formData).length === 0){
+    if (Object.keys(formData).length === 0) {
       toast.warn("Please update details");
-      return
+      return;
     }
-    
 
     try {
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -83,18 +110,16 @@ const Profile = () => {
       if (!res.ok) {
         const errorMessage = data.message || "Profile update failed!";
         dispatch(updateUserFailure(data));
-        toast.error(errorMessage)
+        toast.error(errorMessage);
         return;
       }
       dispatch(updateUserSucces(data));
-      toast.success("Profile updated successfully")
-      
+      toast.success("Profile updated successfully");
     } catch (error) {
       console.error("Error updating profile:", error);
       dispatch(updateUserFailure(error));
       toast.error("An unexpected error occurred. Please try again.");
     }
-    
   };
 
   return (
@@ -152,14 +177,14 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
+        <span onClick={handleDeleteAccount} className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
           Delete Account
         </span>
         <span className="text-white cursor-pointer p-2 rounded-lg bg-red-600">
           Sign out
         </span>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };
