@@ -3,7 +3,11 @@ import HeaderAdmin from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import {
+  fetchAdminDataStart,
+  fetchAdminDataFailure,
+  fetchAdminDataSuccess,
+} from "../../redux/user/adminSlice";
 const LoginAdmin = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.admin);
@@ -26,6 +30,7 @@ const LoginAdmin = () => {
 
       return;
     }
+    dispatch(fetchAdminDataStart());
 
     try {
       const res = await fetch("/api/admin/signin", {
@@ -41,9 +46,12 @@ const LoginAdmin = () => {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
-      navigate('/home-admin')
+      dispatch(fetchAdminDataSuccess(data));
+      navigate("/home-admin");
     } catch (error) {
-      console.log("===>", error);
+      console.error("Error during admin login:", error);
+
+      dispatch(fetchAdminDataFailure(error.message || "Login failed"));
     }
   };
 
