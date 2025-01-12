@@ -8,11 +8,13 @@ import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
+import LoginAdmin from "./Admin/Pages/LoginAdmin";
+import HomeAdmin from "./Admin/Pages/HomeAdmin";
 
 const App = () => {
   return (
     <BrowserRouter>
-    <Header/>
+    
      <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/about" element={<About/>}/>
@@ -23,6 +25,13 @@ const App = () => {
         <Route element={<PrivateRoute/>}>
         <Route path="/profile" element={<Profile/>}/>
         </Route>
+
+        {/* Admin routes */}
+
+
+
+
+
      </Routes>
     </BrowserRouter>
   );

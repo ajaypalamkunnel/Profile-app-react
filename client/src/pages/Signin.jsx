@@ -8,6 +8,7 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
+import Header from "../components/Header";
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
@@ -75,6 +76,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="p-3 mt-8 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -107,6 +110,7 @@ const Signup = () => {
       </div>
       <ToastContainer />
     </div>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ import {
   updateUserSucces,
 } from "../redux/user/userSlice";
 import { toast, ToastContainer } from "react-toastify";
+import Header from "../components/Header";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   console.log(currentUser.username);
@@ -137,6 +138,8 @@ const Profile = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold  text-center my-7">Profile</h1>
 
@@ -203,6 +206,7 @@ const Profile = () => {
       </div>
       <ToastContainer />
     </div>
+    </>
   );
 };
 

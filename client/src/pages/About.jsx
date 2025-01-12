@@ -1,6 +1,9 @@
 import React from 'react'
+import Header from '../components/Header';
 const About = () => {
   return (
+    <>
+    <Header/>
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-4xl text-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">About This Application</h1>
@@ -45,6 +48,7 @@ const About = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 
