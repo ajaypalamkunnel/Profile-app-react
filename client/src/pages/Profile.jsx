@@ -55,7 +55,7 @@ const Profile = () => {
         />
         <img
           className="ml-auto h-24 w-24 mr-auto cursor-pointer rounded-full object-cover mt-2"
-          src={currentUser.profilePicture}
+          src={imageUrl||currentUser.profilePicture}
           alt="Profile IMG"
           onClick={() => fileRef.current.click()}
         />
