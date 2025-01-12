@@ -30,6 +30,8 @@ const App = () => {
 
 
 
+        <Route path="/login-admin" element={<LoginAdmin/>} />
+        <Route path="/home-admin" element={<HomeAdmin/>} />
 
 
      </Routes>
