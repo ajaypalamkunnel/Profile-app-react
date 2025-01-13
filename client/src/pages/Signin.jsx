@@ -68,48 +68,51 @@ const Signup = () => {
       const errorMessage = error.message.includes("404")
         ? "Invalid credentials. Please check your email and password."
         : error;
-        console.log("=====>",errorMessage);
-        
+      console.log("=====>", errorMessage);
+
       dispatch(signInFailure(error));
-      toast.error(errorMessage+"====>");
+      toast.error(errorMessage);
     }
   };
 
   return (
     <>
-    <Header/>
-    <div className="p-3 mt-8 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="email"
-          placeholder="email"
-          id="email"
-          className="bg-slate-100 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          id="password"
-          className="bg-slate-100 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <button  disabled={loading} className="bg-slate-700 rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
-          {loading ? "Loading..." : "Sign Up"}
-        </button>
+      <Header />
+      <div className="p-3 mt-8 max-w-lg mx-auto">
+        <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="email"
+            id="email"
+            className="bg-slate-100 p-3 rounded-lg"
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            placeholder="password"
+            id="password"
+            className="bg-slate-100 p-3 rounded-lg"
+            onChange={handleChange}
+          />
+          <button
+            disabled={loading}
+            className="bg-slate-700 rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            {loading ? "Loading..." : "Sign Up"}
+          </button>
 
-        <OAuth/>
-      </form>
-       
-      <div className="flex gap-2 mt-5">
-        <p>Don't Have an accout </p>
-        <Link to="/sign-up">
-          <span className="text-blue-600 ">sign Up</span>
-        </Link>
+          <OAuth />
+        </form>
+
+        <div className="flex gap-2 mt-5">
+          <p>Don't Have an accout </p>
+          <Link to="/sign-up">
+            <span className="text-blue-600 ">sign Up</span>
+          </Link>
+        </div>
+        <ToastContainer />
       </div>
-      <ToastContainer />
-    </div>
     </>
   );
 };

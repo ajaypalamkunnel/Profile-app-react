@@ -1,10 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {clearAdminData} from '../../redux/user/adminSlice'
 const HeaderAdmin = () => {
-  const handleSignout = ()=>{
 
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleSignout = async()=>{
+      try {
+        await fetch("/api/admin/signout")
+        dispatch(clearAdminData())
+        navigate('/login-admin')
+      } catch (error) {
+        console.log(error);
+        
+      }
   }
+
   return (
     <div className="bg-slate-200">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -13,7 +26,7 @@ const HeaderAdmin = () => {
         </Link>
         <ul className="flex gap-4">
           <Link>
-          <li onClick={()=>handleSignout} className="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer hover:bg-red-600 transition">SignOut</li>
+          <li onClick={()=>handleSignout()} className="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer hover:bg-red-600 transition">SignOut</li>
           </Link>
         </ul>
       </div>
