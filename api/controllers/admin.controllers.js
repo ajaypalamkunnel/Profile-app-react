@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
+import User from "../models/user.model.js";
 
 export const signin = (req, res, next) => {
   const { username, password } = req.body;
@@ -33,3 +34,23 @@ export const signin = (req, res, next) => {
     next(error);
   }
 };
+
+export const dashboard = async (req, res, next) => {
+  try {
+    const users = await User.find({}, "username email profilePicture");
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};
+
+
+export const updateUser = async (req,res,next)=>{
+
+}
+
+export const deleteUser = async (req,res,next)=>{
+  
+}
