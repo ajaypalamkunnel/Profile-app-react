@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   adminData: null,
-  loading: null,
+  loading: false,
   error: false,
 };
 
@@ -14,6 +14,8 @@ const adminSlice = createSlice({
       state.loading = true;
     },
     fetchAdminDataSuccess: (state, action) => {
+      // console.log("===>",action.payload);
+      
       state.adminData = action.payload;
       state.loading = false;
       state.error = false;
