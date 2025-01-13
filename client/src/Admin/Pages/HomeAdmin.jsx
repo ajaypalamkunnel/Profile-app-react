@@ -7,6 +7,8 @@ const HomeAdmin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingUser, setEditinguser] = useState(null);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -78,7 +80,43 @@ const HomeAdmin = () => {
     };
   };
 
-  const handleUpdate = () => {};
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      const res = await fetch(`/api/admin/update-user/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+
+      if(!res.ok){
+        throw new Error(`Failed to update user:${res.status}`)
+      }
+
+      const updatedUser = await res.json()
+
+      console.log(updatedData);
+      
+      setUsers((prevUsers)=>
+        prevUsers.map((user)=>(user._id === id ? updatedUser:user))
+      )
+      
+      
+      
+      toast.success("User updated successfully")
+      setEditinguser(null)
+
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast.error("Failed to update user");
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditinguser(null);
+  };
+  const statEditing = (user) => {
+    setEditinguser(user);
+  };
 
   return (
     <div className=" bg-gray-100 min-h-screen">
@@ -106,9 +144,9 @@ const HomeAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {users.map((user,index) => (
                   <tr
-                    key={user.id}
+                    key={index}
                     className="border-t hover:bg-gray-100 transition-colors"
                   >
                     {/* Profile Picture */}
@@ -121,28 +159,80 @@ const HomeAdmin = () => {
                     </td>
 
                     {/* Username */}
-                    <td className="py-2 px-4 text-gray-800">{user.username}</td>
+                    <td className="py-2 px-4 text-gray-800">
+                      {editingUser?._id === user._id ? (
+                        <input
+                          type="text"
+                          defaultValue={user.username}
+                          onChange={(e) =>
+                            setEditinguser({
+                              ...editingUser,
+                              username: e.target.value,
+                            })
+                          }
+                          className="border p-1 rounded"
+                        />
+                      ) : (
+                        user.username
+                      )}
+                    </td>
 
                     {/* Email */}
-                    <td className="py-2 px-4 text-gray-600">{user.email}</td>
+                    <td className="py-2 px-4 text-gray-600">
+                      {editingUser?._id === user._id ? (
+                        <input
+                          type="email"
+                          defaultValue={user.email}
+                          onChange={(e) => {
+                            setEditinguser({
+                              ...editingUser,
+                              email: e.target.value,
+                            });
+                          }}
+                        />
+                      ) : (
+                        user.email
+                      )}
+                    </td>
 
                     {/* Actions */}
                     <td className="py-2 px-4 flex justify-center gap-4">
                       {/* Update Button */}
-                      <button
-                        onClick={handleUpdate}
-                        className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
-                      >
-                        Update
-                      </button>
+                      {editingUser?._id === user._id ? (
+                        <>
+                          <button
+                            className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition"
+                            onClick={() => handleUpdate(user._id, editingUser)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="bg-gray-300 text-gray-800 px-4 py-1 rounded hover:bg-gray-400 transition"
+                            onClick={cancelEditing}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => statEditing(user)}
+                          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+                        >
+                          Edit
+                        </button>
+                      )}
 
                       {/* Delete Button */}
-                      <button
-                        onClick={()=>handleDelete(user._id)}
-                        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
-                      >
-                        Delete
-                      </button>
+                      {editingUser?._id === user.id ? (
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+                        >
+                          Delete
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </td>
                   </tr>
                 ))}
