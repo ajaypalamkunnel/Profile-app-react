@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import HeaderAdmin from "../components/Header";
+import { toast, ToastContainer } from "react-toastify";
 
 const HomeAdmin = () => {
   // Sample data to populate the table
@@ -34,18 +35,50 @@ const HomeAdmin = () => {
     fetchUsers();
   }, []);
 
+  const handleDelete = (id) => {
+    toast(
+      <div className="text-center">
+        <p>Are you sure you want to delete this user?</p>
+        <div className="flex justify-center gap-4 mt-3">
+          <button
+            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+            onClick={() => confirmDelete(id)}
+          >
+            Yes
+          </button>
+          <button
+            className="bg-gray-300 text-gray-800 px-4 py-1 rounded hover:bg-gray-400 transition"
+            onClick={() => toast.dismiss()}
+          >
+            No
+          </button>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        closeOnClick: true,
+      }
+    );
 
-  const handleUpdate = ()=>{
+    const confirmDelete = async (id) => {
+      try {
+        const res = await fetch(`/api/admin/delete-user/${id}`, {
+          method: "DELETE",
+        });
 
-  }
+        if (!res.ok) {
+          throw new Error(`Failed to delete user: ${res.status}`);
+        }
+        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
+        toast.success("User deleted successfully");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        toast.error("Failed to delete user");
+      }
+    };
+  };
 
-  const handleDelete = ()=>{
-
-
-  }
-
-
-
+  const handleUpdate = () => {};
 
   return (
     <div className=" bg-gray-100 min-h-screen">
@@ -96,12 +129,18 @@ const HomeAdmin = () => {
                     {/* Actions */}
                     <td className="py-2 px-4 flex justify-center gap-4">
                       {/* Update Button */}
-                      <button onClick={handleUpdate} className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition">
+                      <button
+                        onClick={handleUpdate}
+                        className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+                      >
                         Update
                       </button>
 
                       {/* Delete Button */}
-                      <button onClick={handleDelete(user._id)} className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition">
+                      <button
+                        onClick={()=>handleDelete(user._id)}
+                        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+                      >
                         Delete
                       </button>
                     </td>
@@ -112,6 +151,7 @@ const HomeAdmin = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

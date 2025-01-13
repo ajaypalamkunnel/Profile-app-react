@@ -1,6 +1,6 @@
 import express from 'express'
-import { dashboard, signin } from '../controllers/admin.controllers.js'
-import { deleteUser, updateUser } from '../controllers/user.controllers.js'
+import { dashboard, deleteUser, signin, updateUser } from '../controllers/admin.controllers.js'
+
 
 const router = express.Router()
 
