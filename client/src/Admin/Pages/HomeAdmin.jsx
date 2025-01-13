@@ -8,6 +8,7 @@ const HomeAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingUser, setEditinguser] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -36,6 +37,23 @@ const HomeAdmin = () => {
     };
     fetchUsers();
   }, []);
+
+  const validateForm = (data) => {
+    const errors = {};
+
+    if (!data.username || data.username.trim() === "") {
+      errors.username = "Username is required.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation
+    if (!data.email || !emailRegex.test(data.email)) {
+      errors.email = "Valid email is required.";
+    }
+
+    setValidationErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
 
   const handleDelete = (id) => {
     toast(
@@ -81,6 +99,11 @@ const HomeAdmin = () => {
   };
 
   const handleUpdate = async (id, updatedData) => {
+    if (!validateForm(updatedData)) {
+      toast.error("Invalid entries");
+      return;
+    }
+
     try {
       const res = await fetch(`/api/admin/update-user/${id}`, {
         method: "PUT",
@@ -88,23 +111,20 @@ const HomeAdmin = () => {
         body: JSON.stringify(updatedData),
       });
 
-      if(!res.ok){
-        throw new Error(`Failed to update user:${res.status}`)
+      if (!res.ok) {
+        throw new Error(`Failed to update user:${res.status}`);
       }
 
-      const updatedUser = await res.json()
+      const updatedUser = await res.json();
 
       console.log(updatedData);
-      
-      setUsers((prevUsers)=>
-        prevUsers.map((user)=>(user._id === id ? updatedUser:user))
-      )
-      
-      
-      
-      toast.success("User updated successfully")
-      setEditinguser(null)
 
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === id ? updatedUser : user))
+      );
+
+      toast.success("User updated successfully");
+      setEditinguser(null);
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("Failed to update user");
@@ -118,6 +138,7 @@ const HomeAdmin = () => {
     setEditinguser(user);
   };
 
+  
   return (
     <div className=" bg-gray-100 min-h-screen">
       {/* Header */}
@@ -144,7 +165,7 @@ const HomeAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user,index) => (
+                {users.map((user, index) => (
                   <tr
                     key={index}
                     className="border-t hover:bg-gray-100 transition-colors"
@@ -161,17 +182,29 @@ const HomeAdmin = () => {
                     {/* Username */}
                     <td className="py-2 px-4 text-gray-800">
                       {editingUser?._id === user._id ? (
-                        <input
-                          type="text"
-                          defaultValue={user.username}
-                          onChange={(e) =>
-                            setEditinguser({
-                              ...editingUser,
-                              username: e.target.value,
-                            })
-                          }
-                          className="border p-1 rounded"
-                        />
+                        <div>
+                          <input
+                            type="text"
+                            defaultValue={user.username}
+                            onChange={(e) =>
+                              setEditinguser({
+                                ...editingUser,
+                                username: e.target.value,
+                              })
+                            }
+                            className={`border p-1 rounded ${
+                              validationErrors.username
+                                ? "border-red-500"
+                                : "border-gray-300"
+                            }`}
+                          />
+
+                          {validationErrors.username && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {validationErrors.username}
+                            </p>
+                          )}
+                        </div>
                       ) : (
                         user.username
                       )}
@@ -180,6 +213,7 @@ const HomeAdmin = () => {
                     {/* Email */}
                     <td className="py-2 px-4 text-gray-600">
                       {editingUser?._id === user._id ? (
+                        <div>
                         <input
                           type="email"
                           defaultValue={user.email}
@@ -189,7 +223,18 @@ const HomeAdmin = () => {
                               email: e.target.value,
                             });
                           }}
+                          className={`border p-1 rounded ${
+                            validationErrors.email
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
                         />
+                         {validationErrors.email && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {validationErrors.email}
+                            </p>
+                          )}
+                        </div>
                       ) : (
                         user.email
                       )}
