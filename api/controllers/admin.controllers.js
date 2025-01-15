@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
+import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
 
 export const signin = (req, res, next) => {
@@ -49,7 +50,6 @@ export const dashboard = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   const { id } = req.params;
   console.log(id);
-  
 
   const { username, email } = req.body;
   try {
@@ -65,9 +65,8 @@ export const updateUser = async (req, res, next) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Error updating user:",error);
-    res.status(500).json({message:"Failed to update user"})
-    
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Failed to update user" });
   }
 };
 
@@ -88,7 +87,27 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
+export const addNewProfile = async (req, res, next) => {
+  console.log("addNewProfile");
+  
+  const { username, email, password } = req.body;
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+  const newUser = new User({ username, email, password: hashedPassword });
+  try {
+    await newUser.save();
+    res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyValue)[0];
 
-export const signout = async (req,res,next)=>{
-  res.clearCookie('acces_token_admin').status(200).json("Signout message")
-}
+      return res.status(400).json({
+        message: `The ${duplicateField} "${error.keyValue[duplicateField]}" is already in use.`,
+      });
+    }
+    next(error);
+  }
+};
+
+export const signout = async (req, res, next) => {
+  res.clearCookie("acces_token_admin").status(200).json("Signout message");
+};

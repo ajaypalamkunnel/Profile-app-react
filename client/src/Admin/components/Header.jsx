@@ -23,7 +23,7 @@ const HeaderAdmin = () => {
   return (
     <div className="bg-slate-200">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
-        <Link to="/">
+        <Link to="">
           <h1 className="font-bold">Profile App Admin</h1>
         </Link>
         <ul className="flex gap-4">

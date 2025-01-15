@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderAdmin from "../components/Header";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const HomeAdmin = () => {
   // Sample data to populate the table
@@ -9,7 +10,8 @@ const HomeAdmin = () => {
   const [error, setError] = useState(null);
   const [editingUser, setEditinguser] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate()
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -98,6 +100,16 @@ const HomeAdmin = () => {
     };
   };
 
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const handleUpdate = async (id, updatedData) => {
     if (!validateForm(updatedData)) {
       toast.error("Invalid entries");
@@ -138,7 +150,6 @@ const HomeAdmin = () => {
     setEditinguser(user);
   };
 
-  
   return (
     <div className=" bg-gray-100 min-h-screen">
       {/* Header */}
@@ -149,6 +160,18 @@ const HomeAdmin = () => {
         <h2 className="text-xl font-bold text-gray-700 mb-4">
           Admin Dashboard
         </h2>
+        <div className="flex gap-2 p-3 mb-3 justify-between">
+          <input
+            className="p-2 bg-slate-500 rounded-lg w-80 text-white"
+            type="text"
+            placeholder="Search by username or email"
+            value={searchTerm} // Controlled input
+            onChange={handleSearch} // Update search term as the user types
+          />
+          
+          <button onClick={()=>navigate('/add-profile')} className="bg-slate-800 text-white p-2 rounded-lg">Add New Profile</button>
+          
+        </div>
 
         {loading && <p className="text-gray-600 text-center">Loading...</p>}
 
@@ -165,7 +188,7 @@ const HomeAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user, index) => (
+                {filteredUsers.map((user, index) => (
                   <tr
                     key={index}
                     className="border-t hover:bg-gray-100 transition-colors"
@@ -214,22 +237,22 @@ const HomeAdmin = () => {
                     <td className="py-2 px-4 text-gray-600">
                       {editingUser?._id === user._id ? (
                         <div>
-                        <input
-                          type="email"
-                          defaultValue={user.email}
-                          onChange={(e) => {
-                            setEditinguser({
-                              ...editingUser,
-                              email: e.target.value,
-                            });
-                          }}
-                          className={`border p-1 rounded ${
-                            validationErrors.email
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                        />
-                         {validationErrors.email && (
+                          <input
+                            type="email"
+                            defaultValue={user.email}
+                            onChange={(e) => {
+                              setEditinguser({
+                                ...editingUser,
+                                email: e.target.value,
+                              });
+                            }}
+                            className={`border p-1 rounded ${
+                              validationErrors.email
+                                ? "border-red-500"
+                                : "border-gray-300"
+                            }`}
+                          />
+                          {validationErrors.email && (
                             <p className="text-red-500 text-sm mt-1">
                               {validationErrors.email}
                             </p>

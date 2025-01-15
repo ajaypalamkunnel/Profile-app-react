@@ -12,6 +12,7 @@ import LoginAdmin from "./Admin/Pages/LoginAdmin";
 import HomeAdmin from "./Admin/Pages/HomeAdmin";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
 import AdminPublicRoute from "./components/AdminPublicRoute";
+import AddProfile from "./Admin/Pages/AddProfile";
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
 
         <Route element={<AdminPrivateRoute/>}>
         <Route path="/home-admin" element={<HomeAdmin/>} />
+        <Route path="/add-profile" element={<AddProfile/>}/>
         </Route>
 
      </Routes>

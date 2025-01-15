@@ -99,7 +99,7 @@ const Signup = () => {
             disabled={loading}
             className="bg-slate-700 rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Loading..." : "Sign Up"}
+            {loading ? "Loading..." : "Sign in"}
           </button>
 
           <OAuth />
